@@ -59,9 +59,14 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint8_t temp = 0;
-
+uint8_t data[] = "Hello UART \r\n";
+uint8_t buffer[100];
+uint8_t index_buffer = 0;
+char str[40];
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	if(huart->Instance == USART2) {
+		//buffer[index_buffer++] = data[0];
+		//if(index_buffer >= 100) index_buffer = 0;
 		HAL_UART_Transmit(&huart2, &temp, 1, 50);
 		HAL_UART_Receive_IT(&huart2, &temp, 1);
 	}
@@ -104,13 +109,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_ADC_Start(&hadc1);
   uint32_t  ADC_value = 0;
-  char* str;
   while (1)
   {
 	  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
 	  ADC_value = HAL_ADC_GetValue(&hadc1);
-	  HAL_UART_Transmit(&huart2, (void *)str, sprintf(str, "%d\n", ADC_value), 1000);
+	  HAL_UART_Transmit(&huart2, (uint8_t *)str, sprintf(str, "%d\r\n", ADC_value,"\r\n"), 1000);
+	  //HAL_UART_Transmit(&huart2,  data, sizeof(data), 1000);
 	  HAL_Delay(500);
     /* USER CODE END WHILE */
 
