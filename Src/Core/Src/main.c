@@ -92,6 +92,8 @@ uint8_t OK_flag = 0;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	if(huart->Instance == USART2) {
+		HAL_UART_Transmit(&huart2 , &temp , 1 , 50) ;
+
 		buffer[index_buffer++] = temp;
 		if(index_buffer == MAX_BUFFER_SIZE) index_buffer = 0;
 		buffer_flag = 1;
@@ -102,7 +104,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 void command_parser_fsm() {
 	switch(command_state){
 	case INIT:
-		if(temp == (int)'!') command_state = START;
+		if(temp == (int)'!') {
+			HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+			command_state = START;
+		}
 		else command_state = INIT;
 		break;
 	case START:
@@ -138,11 +143,15 @@ void command_parser_fsm() {
 		break;
 	case END1:
 		RST_flag = 1;
+		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+
 		if(temp == (int)'!') command_state = START;
 		else command_state = INIT;
 		break;
 	case END2:
 		OK_flag = 1;
+		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+
 		if(temp == (int)'!') command_state = START;
 		else command_state = INIT;
 		break;
@@ -168,7 +177,7 @@ void uart_communication_fsm() {
 		communicate_state = PRINT_ADC;
 		break;
 	case PRINT_ADC:
-		HAL_UART_Transmit(&huart2, (uint8_t*)str, sprintf(str, "!ADC = %ld# \r\n", adc_value), 1000);
+		HAL_UART_Transmit(&huart2, (uint8_t*)str, sprintf(str, "!ADC = %ld# \r\n", adc_value), 50);
 		communicate_state = WAIT_OK;
 		break;
 	case WAIT_OK:
