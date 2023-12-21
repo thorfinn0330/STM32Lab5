@@ -62,11 +62,11 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN 0 */
 #define INIT 		1
 #define START 		2
-#define R			3
-#define S			4
-#define T			5
-#define O			6
-#define K			7
+#define R		3
+#define S		4
+#define T		5
+#define O		6
+#define K		7
 #define END1 		8
 #define END2		9
 #define WAIT_RST	10
@@ -97,7 +97,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 void command_parser_fsm() {
 	switch(command_state){
-	case INTIT:
+	case INIT:
 		if(temp == (int)'!') command_state = START;
 		else command_state = INIT;
 		break;
@@ -221,7 +221,6 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   HAL_ADC_Start(&hadc1);
-  uint32_t  ADC_value = 0;
   //lab5
   while (1)
   {

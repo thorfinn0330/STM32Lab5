@@ -5,6 +5,7 @@
  *      Author: PC
  */
 #include "software_timer.h"
+int TIME_DURATION = 10;
 
 int timer1_counter = 0;
 int timer1_flag = 0;
