@@ -20,7 +20,9 @@
 #include "main.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "software_timer.h"
+#include "stdio.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,17 +60,126 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+#define INIT 		1
+#define START 		2
+#define R			3
+#define S			4
+#define T			5
+#define O			6
+#define K			7
+#define END1 		8
+#define END2		9
+#define WAIT_RST	10
+#define GET_ADC		11
+#define	PRINT_ADC	12
+#define WAIT_OK		13
+uint8_t command_state = 1;
+uint8_t communicate_state = 1;
+#define MAX_BUFFER_SIZE 30
 uint8_t temp = 0;
-uint8_t data[] = "Hello UART \r\n";
-uint8_t buffer[100];
+uint8_t buffer[MAX_BUFFER_SIZE];
 uint8_t index_buffer = 0;
+uint8_t buffer_flag = 0;
+
+uint32_t adc_value = 0;
 char str[40];
+uint8_t RST_flag = 0;
+uint8_t OK_flag = 0;
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	if(huart->Instance == USART2) {
-		//buffer[index_buffer++] = data[0];
-		//if(index_buffer >= 100) index_buffer = 0;
-		HAL_UART_Transmit(&huart2, &temp, 1, 50);
+		buffer[index_buffer++] = temp;
+		if(index_buffer == MAX_BUFFER_SIZE) index_buffer = 0;
+		buffer_flag = 1;
 		HAL_UART_Receive_IT(&huart2, &temp, 1);
+	}
+}
+
+void command_parser_fsm() {
+	switch(command_state){
+	case INTIT:
+		if(temp == (int)'!') command_state = START;
+		else command_state = INIT;
+		break;
+	case START:
+		if(temp == (int)'!') command_state = START;
+		else if(temp == (int)'R') command_state = R;
+		else if(temp == (int)'O') command_state = O;
+		else command_state = INIT;
+		break;
+	case R:
+		if(temp == (int)'!') command_state = START;
+		else if(temp == (int)'S') command_state = S;
+		else command_state = INIT;
+		break;
+	case S:
+		if(temp == (int)'!') command_state = START;
+		else if(temp == (int)'T') command_state = T;
+		else command_state = INIT;
+		break;
+	case T:
+		if(temp == (int)'!') command_state = START;
+		else if(temp == (int)'#') command_state = END1;
+		else command_state = INIT;
+		break;
+	case O:
+		if(temp == (int)'!') command_state = START;
+		else if(temp == (int)'K') command_state = K;
+		else command_state = INIT;
+		break;
+	case K:
+		if(temp == (int)'!') command_state = START;
+		else if(temp == (int)'#') command_state = END2;
+		else command_state = INIT;
+		break;
+	case END1:
+		RST_flag = 1;
+		if(temp == (int)'!') command_state = START;
+		else command_state = INIT;
+		break;
+	case END2:
+		OK_flag = 1;
+		if(temp == (int)'!') command_state = START;
+		else command_state = INIT;
+		break;
+	default:
+		break;
+	}
+}
+
+void uart_communication_fsm() {
+	switch(communicate_state){
+	case INIT:
+		communicate_state = WAIT_RST;
+		break;
+	case WAIT_RST:
+		if(RST_flag == 1) {
+			RST_flag = 0;
+			setTimer1(300);
+			communicate_state = GET_ADC;
+		}
+		break;
+	case GET_ADC:
+		adc_value = HAL_ADC_GetValue(&hadc1);
+		communicate_state = PRINT_ADC;
+		break;
+	case PRINT_ADC:
+		HAL_UART_Transmit(&huart2, (uint8_t*)str, sprintf(str, "!ADC = %ld# \r\n", adc_value), 1000);
+		communicate_state = WAIT_OK;
+		break;
+	case WAIT_OK:
+		if(OK_flag == 1) {
+			OK_flag = 0;
+			timer1_flag = 1;
+			communicate_state = WAIT_RST;
+		}
+		else if (timer1_flag == 1) {
+			setTimer1(300);
+			communicate_state = PRINT_ADC;
+		}
+		break;
+	default:
+		break;
 	}
 }
 /* USER CODE END 0 */
@@ -111,13 +222,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   HAL_ADC_Start(&hadc1);
   uint32_t  ADC_value = 0;
+  //lab5
   while (1)
   {
-	  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
-	  ADC_value = HAL_ADC_GetValue(&hadc1);
-	  HAL_UART_Transmit(&huart2, (uint8_t *)str, sprintf(str, "%d\r\n", ADC_value,"\r\n"), 1000);
-	  //HAL_UART_Transmit(&huart2,  data, sizeof(data), 1000);
-	  HAL_Delay(500);
+	  if(buffer_flag == 1) {
+		  command_parser_fsm();
+		  buffer_flag = 0;
+	  }
+	  uart_communication_fsm();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

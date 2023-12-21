@@ -34,37 +34,37 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := Lab4_Exercise
+BUILD_ARTIFACT_NAME := Lab5_Exercise
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-Lab4_Exercise.elf \
+Lab5_Exercise.elf \
 
 MAP_FILES += \
-Lab4_Exercise.map \
+Lab5_Exercise.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-Lab4_Exercise.list \
+Lab5_Exercise.list \
 
 OBJCOPY_HEX += \
-Lab4_Exercise.hex \
+Lab5_Exercise.hex \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: Lab4_Exercise.elf secondary-outputs
+main-build: Lab5_Exercise.elf secondary-outputs
 
 # Tool invocations
-Lab4_Exercise.elf Lab4_Exercise.map: $(OBJS) $(USER_OBJS) D:\GIT\LAB4\Src\STM32F103C6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Lab4_Exercise.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\GIT\LAB4\Src\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab4_Exercise.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Lab5_Exercise.elf Lab5_Exercise.map: $(OBJS) $(USER_OBJS) D:\GIT\LAB5\Src\STM32F103C6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Lab5_Exercise.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\GIT\LAB5\Src\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab5_Exercise.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -73,19 +73,19 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Lab4_Exercise.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Lab4_Exercise.list"
+Lab5_Exercise.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Lab5_Exercise.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Lab4_Exercise.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "Lab4_Exercise.hex"
+Lab5_Exercise.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "Lab5_Exercise.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) Lab4_Exercise.elf Lab4_Exercise.hex Lab4_Exercise.list Lab4_Exercise.map default.size.stdout
+	-$(RM) Lab5_Exercise.elf Lab5_Exercise.hex Lab5_Exercise.list Lab5_Exercise.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
