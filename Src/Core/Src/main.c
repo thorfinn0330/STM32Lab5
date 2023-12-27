@@ -22,6 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "software_timer.h"
+#include "command_parser_fsm.h"
+#include "global.h"
 #include "stdio.h"
 #include "string.h"
 /* USER CODE END Includes */
@@ -64,31 +66,7 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define INIT 		1
-#define START 		2
-#define R		3
-#define S		4
-#define T		5
-#define O		6
-#define K		7
-#define END1 		8
-#define END2		9
-#define WAIT_RST	10
-#define GET_ADC		11
-#define	PRINT_ADC	12
-#define WAIT_OK		13
-uint8_t command_state = 1;
-uint8_t communicate_state = 1;
-#define MAX_BUFFER_SIZE 30
-uint8_t temp = 0;
-uint8_t buffer[MAX_BUFFER_SIZE];
-uint8_t index_buffer = 0;
-uint8_t buffer_flag = 0;
 
-uint32_t adc_value = 0;
-char str[40];
-uint8_t RST_flag = 0;
-uint8_t OK_flag = 0;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	if(huart->Instance == USART2) {
@@ -101,64 +79,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	}
 }
 
-void command_parser_fsm() {
-	switch(command_state){
-	case INIT:
-		if(temp == (int)'!') {
-			HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
-			command_state = START;
-		}
-		else command_state = INIT;
-		break;
-	case START:
-		if(temp == (int)'!') command_state = START;
-		else if(temp == (int)'R') command_state = R;
-		else if(temp == (int)'O') command_state = O;
-		else command_state = INIT;
-		break;
-	case R:
-		if(temp == (int)'!') command_state = START;
-		else if(temp == (int)'S') command_state = S;
-		else command_state = INIT;
-		break;
-	case S:
-		if(temp == (int)'!') command_state = START;
-		else if(temp == (int)'T') command_state = T;
-		else command_state = INIT;
-		break;
-	case T:
-		if(temp == (int)'!') command_state = START;
-		else if(temp == (int)'#') command_state = END1;
-		else command_state = INIT;
-		break;
-	case O:
-		if(temp == (int)'!') command_state = START;
-		else if(temp == (int)'K') command_state = K;
-		else command_state = INIT;
-		break;
-	case K:
-		if(temp == (int)'!') command_state = START;
-		else if(temp == (int)'#') command_state = END2;
-		else command_state = INIT;
-		break;
-	case END1:
-		RST_flag = 1;
-		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
 
-		if(temp == (int)'!') command_state = START;
-		else command_state = INIT;
-		break;
-	case END2:
-		OK_flag = 1;
-		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
-
-		if(temp == (int)'!') command_state = START;
-		else command_state = INIT;
-		break;
-	default:
-		break;
-	}
-}
 
 void uart_communication_fsm() {
 	switch(communicate_state){

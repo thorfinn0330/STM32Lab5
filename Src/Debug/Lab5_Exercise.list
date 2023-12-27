@@ -29,23 +29,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  12 .comment      00000043  00000000  00000000  0002008d  2**0
                   CONTENTS, READONLY
- 13 .debug_info   0000d42e  00000000  00000000  000200d0  2**0
+ 13 .debug_info   0000d719  00000000  00000000  000200d0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 0000205b  00000000  00000000  0002d4fe  2**0
+ 14 .debug_abbrev 000021dc  00000000  00000000  0002d7e9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00000d90  00000000  00000000  0002f560  2**3
+ 15 .debug_aranges 00000dc0  00000000  00000000  0002f9c8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00000a97  00000000  00000000  000302f0  2**0
+ 16 .debug_rnglists 00000aa4  00000000  00000000  00030788  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00018109  00000000  00000000  00030d87  2**0
+ 17 .debug_macro  000184de  00000000  00000000  0003122c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   0000f7d4  00000000  00000000  00048e90  2**0
+ 18 .debug_line   00010647  00000000  00000000  0004970a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    0008d178  00000000  00000000  00058664  2**0
+ 19 .debug_str    0008d1d8  00000000  00000000  00059d51  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_frame  00003d6c  00000000  00000000  000e57dc  2**2
+ 20 .debug_frame  00003d7c  00000000  00000000  000e6f2c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000003e  00000000  00000000  000e9548  2**0
+ 21 .debug_line_str 0000003e  00000000  00000000  000eaca8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -78,374 +78,380 @@ Disassembly of section .text:
  8000144:	20000068 	.word	0x20000068
  8000148:	0800410c 	.word	0x0800410c
 
-0800014c <HAL_UART_RxCpltCallback>:
-uint32_t adc_value = 0;
-char str[40];
-uint8_t RST_flag = 0;
-uint8_t OK_flag = 0;
+0800014c <command_parser_fsm>:
+ */
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
- 800014c:	b580      	push	{r7, lr}
- 800014e:	b082      	sub	sp, #8
- 8000150:	af00      	add	r7, sp, #0
- 8000152:	6078      	str	r0, [r7, #4]
-	if(huart->Instance == USART2) {
- 8000154:	687b      	ldr	r3, [r7, #4]
- 8000156:	681b      	ldr	r3, [r3, #0]
- 8000158:	4a13      	ldr	r2, [pc, #76]	; (80001a8 <HAL_UART_RxCpltCallback+0x5c>)
- 800015a:	4293      	cmp	r3, r2
- 800015c:	d11f      	bne.n	800019e <HAL_UART_RxCpltCallback+0x52>
-		HAL_UART_Transmit(&huart2 , &temp , 1 , 50) ;
- 800015e:	2332      	movs	r3, #50	; 0x32
- 8000160:	2201      	movs	r2, #1
- 8000162:	4912      	ldr	r1, [pc, #72]	; (80001ac <HAL_UART_RxCpltCallback+0x60>)
- 8000164:	4812      	ldr	r0, [pc, #72]	; (80001b0 <HAL_UART_RxCpltCallback+0x64>)
- 8000166:	f002 fcf7 	bl	8002b58 <HAL_UART_Transmit>
 
-		buffer[index_buffer++] = temp;
- 800016a:	4b12      	ldr	r3, [pc, #72]	; (80001b4 <HAL_UART_RxCpltCallback+0x68>)
- 800016c:	781b      	ldrb	r3, [r3, #0]
- 800016e:	1c5a      	adds	r2, r3, #1
- 8000170:	b2d1      	uxtb	r1, r2
- 8000172:	4a10      	ldr	r2, [pc, #64]	; (80001b4 <HAL_UART_RxCpltCallback+0x68>)
- 8000174:	7011      	strb	r1, [r2, #0]
- 8000176:	461a      	mov	r2, r3
- 8000178:	4b0c      	ldr	r3, [pc, #48]	; (80001ac <HAL_UART_RxCpltCallback+0x60>)
- 800017a:	7819      	ldrb	r1, [r3, #0]
- 800017c:	4b0e      	ldr	r3, [pc, #56]	; (80001b8 <HAL_UART_RxCpltCallback+0x6c>)
- 800017e:	5499      	strb	r1, [r3, r2]
-		if(index_buffer == MAX_BUFFER_SIZE) index_buffer = 0;
- 8000180:	4b0c      	ldr	r3, [pc, #48]	; (80001b4 <HAL_UART_RxCpltCallback+0x68>)
- 8000182:	781b      	ldrb	r3, [r3, #0]
- 8000184:	2b1e      	cmp	r3, #30
- 8000186:	d102      	bne.n	800018e <HAL_UART_RxCpltCallback+0x42>
- 8000188:	4b0a      	ldr	r3, [pc, #40]	; (80001b4 <HAL_UART_RxCpltCallback+0x68>)
- 800018a:	2200      	movs	r2, #0
- 800018c:	701a      	strb	r2, [r3, #0]
-		buffer_flag = 1;
- 800018e:	4b0b      	ldr	r3, [pc, #44]	; (80001bc <HAL_UART_RxCpltCallback+0x70>)
- 8000190:	2201      	movs	r2, #1
- 8000192:	701a      	strb	r2, [r3, #0]
-		HAL_UART_Receive_IT(&huart2, &temp, 1);
- 8000194:	2201      	movs	r2, #1
- 8000196:	4905      	ldr	r1, [pc, #20]	; (80001ac <HAL_UART_RxCpltCallback+0x60>)
- 8000198:	4805      	ldr	r0, [pc, #20]	; (80001b0 <HAL_UART_RxCpltCallback+0x64>)
- 800019a:	f002 fd60 	bl	8002c5e <HAL_UART_Receive_IT>
-	}
-}
- 800019e:	bf00      	nop
- 80001a0:	3708      	adds	r7, #8
- 80001a2:	46bd      	mov	sp, r7
- 80001a4:	bd80      	pop	{r7, pc}
- 80001a6:	bf00      	nop
- 80001a8:	40004400 	.word	0x40004400
- 80001ac:	20000140 	.word	0x20000140
- 80001b0:	200000f8 	.word	0x200000f8
- 80001b4:	20000162 	.word	0x20000162
- 80001b8:	20000144 	.word	0x20000144
- 80001bc:	20000163 	.word	0x20000163
-
-080001c0 <command_parser_fsm>:
+#include "command_parser_fsm.h"
 
 void command_parser_fsm() {
- 80001c0:	b580      	push	{r7, lr}
- 80001c2:	af00      	add	r7, sp, #0
+ 800014c:	b580      	push	{r7, lr}
+ 800014e:	af00      	add	r7, sp, #0
 	switch(command_state){
- 80001c4:	4b6a      	ldr	r3, [pc, #424]	; (8000370 <command_parser_fsm+0x1b0>)
- 80001c6:	781b      	ldrb	r3, [r3, #0]
- 80001c8:	3b01      	subs	r3, #1
- 80001ca:	2b08      	cmp	r3, #8
- 80001cc:	f200 80cc 	bhi.w	8000368 <command_parser_fsm+0x1a8>
- 80001d0:	a201      	add	r2, pc, #4	; (adr r2, 80001d8 <command_parser_fsm+0x18>)
- 80001d2:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
- 80001d6:	bf00      	nop
- 80001d8:	080001fd 	.word	0x080001fd
- 80001dc:	0800021d 	.word	0x0800021d
- 80001e0:	08000255 	.word	0x08000255
- 80001e4:	0800027d 	.word	0x0800027d
- 80001e8:	080002a5 	.word	0x080002a5
- 80001ec:	080002cd 	.word	0x080002cd
- 80001f0:	080002f5 	.word	0x080002f5
- 80001f4:	0800031d 	.word	0x0800031d
- 80001f8:	08000343 	.word	0x08000343
+ 8000150:	4b6a      	ldr	r3, [pc, #424]	; (80002fc <command_parser_fsm+0x1b0>)
+ 8000152:	781b      	ldrb	r3, [r3, #0]
+ 8000154:	3b01      	subs	r3, #1
+ 8000156:	2b08      	cmp	r3, #8
+ 8000158:	f200 80cc 	bhi.w	80002f4 <command_parser_fsm+0x1a8>
+ 800015c:	a201      	add	r2, pc, #4	; (adr r2, 8000164 <command_parser_fsm+0x18>)
+ 800015e:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+ 8000162:	bf00      	nop
+ 8000164:	08000189 	.word	0x08000189
+ 8000168:	080001a9 	.word	0x080001a9
+ 800016c:	080001e1 	.word	0x080001e1
+ 8000170:	08000209 	.word	0x08000209
+ 8000174:	08000231 	.word	0x08000231
+ 8000178:	08000259 	.word	0x08000259
+ 800017c:	08000281 	.word	0x08000281
+ 8000180:	080002a9 	.word	0x080002a9
+ 8000184:	080002cf 	.word	0x080002cf
 	case INIT:
 		if(temp == (int)'!') {
- 80001fc:	4b5d      	ldr	r3, [pc, #372]	; (8000374 <command_parser_fsm+0x1b4>)
- 80001fe:	781b      	ldrb	r3, [r3, #0]
- 8000200:	2b21      	cmp	r3, #33	; 0x21
- 8000202:	d107      	bne.n	8000214 <command_parser_fsm+0x54>
+ 8000188:	4b5d      	ldr	r3, [pc, #372]	; (8000300 <command_parser_fsm+0x1b4>)
+ 800018a:	781b      	ldrb	r3, [r3, #0]
+ 800018c:	2b21      	cmp	r3, #33	; 0x21
+ 800018e:	d107      	bne.n	80001a0 <command_parser_fsm+0x54>
 			HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
- 8000204:	2120      	movs	r1, #32
- 8000206:	485c      	ldr	r0, [pc, #368]	; (8000378 <command_parser_fsm+0x1b8>)
- 8000208:	f001 fb8e 	bl	8001928 <HAL_GPIO_TogglePin>
+ 8000190:	2120      	movs	r1, #32
+ 8000192:	485c      	ldr	r0, [pc, #368]	; (8000304 <command_parser_fsm+0x1b8>)
+ 8000194:	f001 fbc8 	bl	8001928 <HAL_GPIO_TogglePin>
 			command_state = START;
- 800020c:	4b58      	ldr	r3, [pc, #352]	; (8000370 <command_parser_fsm+0x1b0>)
- 800020e:	2202      	movs	r2, #2
- 8000210:	701a      	strb	r2, [r3, #0]
+ 8000198:	4b58      	ldr	r3, [pc, #352]	; (80002fc <command_parser_fsm+0x1b0>)
+ 800019a:	2202      	movs	r2, #2
+ 800019c:	701a      	strb	r2, [r3, #0]
 		}
 		else command_state = INIT;
 		break;
- 8000212:	e0aa      	b.n	800036a <command_parser_fsm+0x1aa>
+ 800019e:	e0aa      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else command_state = INIT;
- 8000214:	4b56      	ldr	r3, [pc, #344]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000216:	2201      	movs	r2, #1
- 8000218:	701a      	strb	r2, [r3, #0]
+ 80001a0:	4b56      	ldr	r3, [pc, #344]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80001a2:	2201      	movs	r2, #1
+ 80001a4:	701a      	strb	r2, [r3, #0]
 		break;
- 800021a:	e0a6      	b.n	800036a <command_parser_fsm+0x1aa>
+ 80001a6:	e0a6      	b.n	80002f6 <command_parser_fsm+0x1aa>
 	case START:
 		if(temp == (int)'!') command_state = START;
- 800021c:	4b55      	ldr	r3, [pc, #340]	; (8000374 <command_parser_fsm+0x1b4>)
- 800021e:	781b      	ldrb	r3, [r3, #0]
- 8000220:	2b21      	cmp	r3, #33	; 0x21
- 8000222:	d103      	bne.n	800022c <command_parser_fsm+0x6c>
- 8000224:	4b52      	ldr	r3, [pc, #328]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000226:	2202      	movs	r2, #2
- 8000228:	701a      	strb	r2, [r3, #0]
+ 80001a8:	4b55      	ldr	r3, [pc, #340]	; (8000300 <command_parser_fsm+0x1b4>)
+ 80001aa:	781b      	ldrb	r3, [r3, #0]
+ 80001ac:	2b21      	cmp	r3, #33	; 0x21
+ 80001ae:	d103      	bne.n	80001b8 <command_parser_fsm+0x6c>
+ 80001b0:	4b52      	ldr	r3, [pc, #328]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80001b2:	2202      	movs	r2, #2
+ 80001b4:	701a      	strb	r2, [r3, #0]
 		else if(temp == (int)'R') command_state = R;
 		else if(temp == (int)'O') command_state = O;
 		else command_state = INIT;
 		break;
- 800022a:	e09e      	b.n	800036a <command_parser_fsm+0x1aa>
+ 80001b6:	e09e      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else if(temp == (int)'R') command_state = R;
- 800022c:	4b51      	ldr	r3, [pc, #324]	; (8000374 <command_parser_fsm+0x1b4>)
- 800022e:	781b      	ldrb	r3, [r3, #0]
- 8000230:	2b52      	cmp	r3, #82	; 0x52
- 8000232:	d103      	bne.n	800023c <command_parser_fsm+0x7c>
- 8000234:	4b4e      	ldr	r3, [pc, #312]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000236:	2203      	movs	r2, #3
- 8000238:	701a      	strb	r2, [r3, #0]
+ 80001b8:	4b51      	ldr	r3, [pc, #324]	; (8000300 <command_parser_fsm+0x1b4>)
+ 80001ba:	781b      	ldrb	r3, [r3, #0]
+ 80001bc:	2b52      	cmp	r3, #82	; 0x52
+ 80001be:	d103      	bne.n	80001c8 <command_parser_fsm+0x7c>
+ 80001c0:	4b4e      	ldr	r3, [pc, #312]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80001c2:	2203      	movs	r2, #3
+ 80001c4:	701a      	strb	r2, [r3, #0]
 		break;
- 800023a:	e096      	b.n	800036a <command_parser_fsm+0x1aa>
+ 80001c6:	e096      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else if(temp == (int)'O') command_state = O;
- 800023c:	4b4d      	ldr	r3, [pc, #308]	; (8000374 <command_parser_fsm+0x1b4>)
- 800023e:	781b      	ldrb	r3, [r3, #0]
- 8000240:	2b4f      	cmp	r3, #79	; 0x4f
- 8000242:	d103      	bne.n	800024c <command_parser_fsm+0x8c>
- 8000244:	4b4a      	ldr	r3, [pc, #296]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000246:	2206      	movs	r2, #6
- 8000248:	701a      	strb	r2, [r3, #0]
+ 80001c8:	4b4d      	ldr	r3, [pc, #308]	; (8000300 <command_parser_fsm+0x1b4>)
+ 80001ca:	781b      	ldrb	r3, [r3, #0]
+ 80001cc:	2b4f      	cmp	r3, #79	; 0x4f
+ 80001ce:	d103      	bne.n	80001d8 <command_parser_fsm+0x8c>
+ 80001d0:	4b4a      	ldr	r3, [pc, #296]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80001d2:	2206      	movs	r2, #6
+ 80001d4:	701a      	strb	r2, [r3, #0]
 		break;
- 800024a:	e08e      	b.n	800036a <command_parser_fsm+0x1aa>
+ 80001d6:	e08e      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else command_state = INIT;
- 800024c:	4b48      	ldr	r3, [pc, #288]	; (8000370 <command_parser_fsm+0x1b0>)
- 800024e:	2201      	movs	r2, #1
- 8000250:	701a      	strb	r2, [r3, #0]
+ 80001d8:	4b48      	ldr	r3, [pc, #288]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80001da:	2201      	movs	r2, #1
+ 80001dc:	701a      	strb	r2, [r3, #0]
 		break;
- 8000252:	e08a      	b.n	800036a <command_parser_fsm+0x1aa>
+ 80001de:	e08a      	b.n	80002f6 <command_parser_fsm+0x1aa>
 	case R:
 		if(temp == (int)'!') command_state = START;
- 8000254:	4b47      	ldr	r3, [pc, #284]	; (8000374 <command_parser_fsm+0x1b4>)
- 8000256:	781b      	ldrb	r3, [r3, #0]
- 8000258:	2b21      	cmp	r3, #33	; 0x21
- 800025a:	d103      	bne.n	8000264 <command_parser_fsm+0xa4>
- 800025c:	4b44      	ldr	r3, [pc, #272]	; (8000370 <command_parser_fsm+0x1b0>)
- 800025e:	2202      	movs	r2, #2
- 8000260:	701a      	strb	r2, [r3, #0]
+ 80001e0:	4b47      	ldr	r3, [pc, #284]	; (8000300 <command_parser_fsm+0x1b4>)
+ 80001e2:	781b      	ldrb	r3, [r3, #0]
+ 80001e4:	2b21      	cmp	r3, #33	; 0x21
+ 80001e6:	d103      	bne.n	80001f0 <command_parser_fsm+0xa4>
+ 80001e8:	4b44      	ldr	r3, [pc, #272]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80001ea:	2202      	movs	r2, #2
+ 80001ec:	701a      	strb	r2, [r3, #0]
 		else if(temp == (int)'S') command_state = S;
 		else command_state = INIT;
 		break;
- 8000262:	e082      	b.n	800036a <command_parser_fsm+0x1aa>
+ 80001ee:	e082      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else if(temp == (int)'S') command_state = S;
- 8000264:	4b43      	ldr	r3, [pc, #268]	; (8000374 <command_parser_fsm+0x1b4>)
- 8000266:	781b      	ldrb	r3, [r3, #0]
- 8000268:	2b53      	cmp	r3, #83	; 0x53
- 800026a:	d103      	bne.n	8000274 <command_parser_fsm+0xb4>
- 800026c:	4b40      	ldr	r3, [pc, #256]	; (8000370 <command_parser_fsm+0x1b0>)
- 800026e:	2204      	movs	r2, #4
- 8000270:	701a      	strb	r2, [r3, #0]
+ 80001f0:	4b43      	ldr	r3, [pc, #268]	; (8000300 <command_parser_fsm+0x1b4>)
+ 80001f2:	781b      	ldrb	r3, [r3, #0]
+ 80001f4:	2b53      	cmp	r3, #83	; 0x53
+ 80001f6:	d103      	bne.n	8000200 <command_parser_fsm+0xb4>
+ 80001f8:	4b40      	ldr	r3, [pc, #256]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80001fa:	2204      	movs	r2, #4
+ 80001fc:	701a      	strb	r2, [r3, #0]
 		break;
- 8000272:	e07a      	b.n	800036a <command_parser_fsm+0x1aa>
+ 80001fe:	e07a      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else command_state = INIT;
- 8000274:	4b3e      	ldr	r3, [pc, #248]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000276:	2201      	movs	r2, #1
- 8000278:	701a      	strb	r2, [r3, #0]
+ 8000200:	4b3e      	ldr	r3, [pc, #248]	; (80002fc <command_parser_fsm+0x1b0>)
+ 8000202:	2201      	movs	r2, #1
+ 8000204:	701a      	strb	r2, [r3, #0]
 		break;
- 800027a:	e076      	b.n	800036a <command_parser_fsm+0x1aa>
+ 8000206:	e076      	b.n	80002f6 <command_parser_fsm+0x1aa>
 	case S:
 		if(temp == (int)'!') command_state = START;
- 800027c:	4b3d      	ldr	r3, [pc, #244]	; (8000374 <command_parser_fsm+0x1b4>)
- 800027e:	781b      	ldrb	r3, [r3, #0]
- 8000280:	2b21      	cmp	r3, #33	; 0x21
- 8000282:	d103      	bne.n	800028c <command_parser_fsm+0xcc>
- 8000284:	4b3a      	ldr	r3, [pc, #232]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000286:	2202      	movs	r2, #2
- 8000288:	701a      	strb	r2, [r3, #0]
+ 8000208:	4b3d      	ldr	r3, [pc, #244]	; (8000300 <command_parser_fsm+0x1b4>)
+ 800020a:	781b      	ldrb	r3, [r3, #0]
+ 800020c:	2b21      	cmp	r3, #33	; 0x21
+ 800020e:	d103      	bne.n	8000218 <command_parser_fsm+0xcc>
+ 8000210:	4b3a      	ldr	r3, [pc, #232]	; (80002fc <command_parser_fsm+0x1b0>)
+ 8000212:	2202      	movs	r2, #2
+ 8000214:	701a      	strb	r2, [r3, #0]
 		else if(temp == (int)'T') command_state = T;
 		else command_state = INIT;
 		break;
- 800028a:	e06e      	b.n	800036a <command_parser_fsm+0x1aa>
+ 8000216:	e06e      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else if(temp == (int)'T') command_state = T;
- 800028c:	4b39      	ldr	r3, [pc, #228]	; (8000374 <command_parser_fsm+0x1b4>)
- 800028e:	781b      	ldrb	r3, [r3, #0]
- 8000290:	2b54      	cmp	r3, #84	; 0x54
- 8000292:	d103      	bne.n	800029c <command_parser_fsm+0xdc>
- 8000294:	4b36      	ldr	r3, [pc, #216]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000296:	2205      	movs	r2, #5
- 8000298:	701a      	strb	r2, [r3, #0]
+ 8000218:	4b39      	ldr	r3, [pc, #228]	; (8000300 <command_parser_fsm+0x1b4>)
+ 800021a:	781b      	ldrb	r3, [r3, #0]
+ 800021c:	2b54      	cmp	r3, #84	; 0x54
+ 800021e:	d103      	bne.n	8000228 <command_parser_fsm+0xdc>
+ 8000220:	4b36      	ldr	r3, [pc, #216]	; (80002fc <command_parser_fsm+0x1b0>)
+ 8000222:	2205      	movs	r2, #5
+ 8000224:	701a      	strb	r2, [r3, #0]
 		break;
- 800029a:	e066      	b.n	800036a <command_parser_fsm+0x1aa>
+ 8000226:	e066      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else command_state = INIT;
- 800029c:	4b34      	ldr	r3, [pc, #208]	; (8000370 <command_parser_fsm+0x1b0>)
- 800029e:	2201      	movs	r2, #1
- 80002a0:	701a      	strb	r2, [r3, #0]
+ 8000228:	4b34      	ldr	r3, [pc, #208]	; (80002fc <command_parser_fsm+0x1b0>)
+ 800022a:	2201      	movs	r2, #1
+ 800022c:	701a      	strb	r2, [r3, #0]
 		break;
- 80002a2:	e062      	b.n	800036a <command_parser_fsm+0x1aa>
+ 800022e:	e062      	b.n	80002f6 <command_parser_fsm+0x1aa>
 	case T:
 		if(temp == (int)'!') command_state = START;
- 80002a4:	4b33      	ldr	r3, [pc, #204]	; (8000374 <command_parser_fsm+0x1b4>)
- 80002a6:	781b      	ldrb	r3, [r3, #0]
- 80002a8:	2b21      	cmp	r3, #33	; 0x21
- 80002aa:	d103      	bne.n	80002b4 <command_parser_fsm+0xf4>
- 80002ac:	4b30      	ldr	r3, [pc, #192]	; (8000370 <command_parser_fsm+0x1b0>)
- 80002ae:	2202      	movs	r2, #2
- 80002b0:	701a      	strb	r2, [r3, #0]
+ 8000230:	4b33      	ldr	r3, [pc, #204]	; (8000300 <command_parser_fsm+0x1b4>)
+ 8000232:	781b      	ldrb	r3, [r3, #0]
+ 8000234:	2b21      	cmp	r3, #33	; 0x21
+ 8000236:	d103      	bne.n	8000240 <command_parser_fsm+0xf4>
+ 8000238:	4b30      	ldr	r3, [pc, #192]	; (80002fc <command_parser_fsm+0x1b0>)
+ 800023a:	2202      	movs	r2, #2
+ 800023c:	701a      	strb	r2, [r3, #0]
 		else if(temp == (int)'#') command_state = END1;
 		else command_state = INIT;
 		break;
- 80002b2:	e05a      	b.n	800036a <command_parser_fsm+0x1aa>
+ 800023e:	e05a      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else if(temp == (int)'#') command_state = END1;
- 80002b4:	4b2f      	ldr	r3, [pc, #188]	; (8000374 <command_parser_fsm+0x1b4>)
- 80002b6:	781b      	ldrb	r3, [r3, #0]
- 80002b8:	2b23      	cmp	r3, #35	; 0x23
- 80002ba:	d103      	bne.n	80002c4 <command_parser_fsm+0x104>
- 80002bc:	4b2c      	ldr	r3, [pc, #176]	; (8000370 <command_parser_fsm+0x1b0>)
- 80002be:	2208      	movs	r2, #8
- 80002c0:	701a      	strb	r2, [r3, #0]
+ 8000240:	4b2f      	ldr	r3, [pc, #188]	; (8000300 <command_parser_fsm+0x1b4>)
+ 8000242:	781b      	ldrb	r3, [r3, #0]
+ 8000244:	2b23      	cmp	r3, #35	; 0x23
+ 8000246:	d103      	bne.n	8000250 <command_parser_fsm+0x104>
+ 8000248:	4b2c      	ldr	r3, [pc, #176]	; (80002fc <command_parser_fsm+0x1b0>)
+ 800024a:	2208      	movs	r2, #8
+ 800024c:	701a      	strb	r2, [r3, #0]
 		break;
- 80002c2:	e052      	b.n	800036a <command_parser_fsm+0x1aa>
+ 800024e:	e052      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else command_state = INIT;
- 80002c4:	4b2a      	ldr	r3, [pc, #168]	; (8000370 <command_parser_fsm+0x1b0>)
- 80002c6:	2201      	movs	r2, #1
- 80002c8:	701a      	strb	r2, [r3, #0]
+ 8000250:	4b2a      	ldr	r3, [pc, #168]	; (80002fc <command_parser_fsm+0x1b0>)
+ 8000252:	2201      	movs	r2, #1
+ 8000254:	701a      	strb	r2, [r3, #0]
 		break;
- 80002ca:	e04e      	b.n	800036a <command_parser_fsm+0x1aa>
+ 8000256:	e04e      	b.n	80002f6 <command_parser_fsm+0x1aa>
 	case O:
 		if(temp == (int)'!') command_state = START;
- 80002cc:	4b29      	ldr	r3, [pc, #164]	; (8000374 <command_parser_fsm+0x1b4>)
- 80002ce:	781b      	ldrb	r3, [r3, #0]
- 80002d0:	2b21      	cmp	r3, #33	; 0x21
- 80002d2:	d103      	bne.n	80002dc <command_parser_fsm+0x11c>
- 80002d4:	4b26      	ldr	r3, [pc, #152]	; (8000370 <command_parser_fsm+0x1b0>)
- 80002d6:	2202      	movs	r2, #2
- 80002d8:	701a      	strb	r2, [r3, #0]
+ 8000258:	4b29      	ldr	r3, [pc, #164]	; (8000300 <command_parser_fsm+0x1b4>)
+ 800025a:	781b      	ldrb	r3, [r3, #0]
+ 800025c:	2b21      	cmp	r3, #33	; 0x21
+ 800025e:	d103      	bne.n	8000268 <command_parser_fsm+0x11c>
+ 8000260:	4b26      	ldr	r3, [pc, #152]	; (80002fc <command_parser_fsm+0x1b0>)
+ 8000262:	2202      	movs	r2, #2
+ 8000264:	701a      	strb	r2, [r3, #0]
 		else if(temp == (int)'K') command_state = K;
 		else command_state = INIT;
 		break;
- 80002da:	e046      	b.n	800036a <command_parser_fsm+0x1aa>
+ 8000266:	e046      	b.n	80002f6 <command_parser_fsm+0x1aa>
 		else if(temp == (int)'K') command_state = K;
- 80002dc:	4b25      	ldr	r3, [pc, #148]	; (8000374 <command_parser_fsm+0x1b4>)
+ 8000268:	4b25      	ldr	r3, [pc, #148]	; (8000300 <command_parser_fsm+0x1b4>)
+ 800026a:	781b      	ldrb	r3, [r3, #0]
+ 800026c:	2b4b      	cmp	r3, #75	; 0x4b
+ 800026e:	d103      	bne.n	8000278 <command_parser_fsm+0x12c>
+ 8000270:	4b22      	ldr	r3, [pc, #136]	; (80002fc <command_parser_fsm+0x1b0>)
+ 8000272:	2207      	movs	r2, #7
+ 8000274:	701a      	strb	r2, [r3, #0]
+		break;
+ 8000276:	e03e      	b.n	80002f6 <command_parser_fsm+0x1aa>
+		else command_state = INIT;
+ 8000278:	4b20      	ldr	r3, [pc, #128]	; (80002fc <command_parser_fsm+0x1b0>)
+ 800027a:	2201      	movs	r2, #1
+ 800027c:	701a      	strb	r2, [r3, #0]
+		break;
+ 800027e:	e03a      	b.n	80002f6 <command_parser_fsm+0x1aa>
+	case K:
+		if(temp == (int)'!') command_state = START;
+ 8000280:	4b1f      	ldr	r3, [pc, #124]	; (8000300 <command_parser_fsm+0x1b4>)
+ 8000282:	781b      	ldrb	r3, [r3, #0]
+ 8000284:	2b21      	cmp	r3, #33	; 0x21
+ 8000286:	d103      	bne.n	8000290 <command_parser_fsm+0x144>
+ 8000288:	4b1c      	ldr	r3, [pc, #112]	; (80002fc <command_parser_fsm+0x1b0>)
+ 800028a:	2202      	movs	r2, #2
+ 800028c:	701a      	strb	r2, [r3, #0]
+		else if(temp == (int)'#') command_state = END2;
+		else command_state = INIT;
+		break;
+ 800028e:	e032      	b.n	80002f6 <command_parser_fsm+0x1aa>
+		else if(temp == (int)'#') command_state = END2;
+ 8000290:	4b1b      	ldr	r3, [pc, #108]	; (8000300 <command_parser_fsm+0x1b4>)
+ 8000292:	781b      	ldrb	r3, [r3, #0]
+ 8000294:	2b23      	cmp	r3, #35	; 0x23
+ 8000296:	d103      	bne.n	80002a0 <command_parser_fsm+0x154>
+ 8000298:	4b18      	ldr	r3, [pc, #96]	; (80002fc <command_parser_fsm+0x1b0>)
+ 800029a:	2209      	movs	r2, #9
+ 800029c:	701a      	strb	r2, [r3, #0]
+		break;
+ 800029e:	e02a      	b.n	80002f6 <command_parser_fsm+0x1aa>
+		else command_state = INIT;
+ 80002a0:	4b16      	ldr	r3, [pc, #88]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80002a2:	2201      	movs	r2, #1
+ 80002a4:	701a      	strb	r2, [r3, #0]
+		break;
+ 80002a6:	e026      	b.n	80002f6 <command_parser_fsm+0x1aa>
+	case END1:
+		RST_flag = 1;
+ 80002a8:	4b17      	ldr	r3, [pc, #92]	; (8000308 <command_parser_fsm+0x1bc>)
+ 80002aa:	2201      	movs	r2, #1
+ 80002ac:	701a      	strb	r2, [r3, #0]
+		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+ 80002ae:	2120      	movs	r1, #32
+ 80002b0:	4814      	ldr	r0, [pc, #80]	; (8000304 <command_parser_fsm+0x1b8>)
+ 80002b2:	f001 fb39 	bl	8001928 <HAL_GPIO_TogglePin>
+
+		if(temp == (int)'!') command_state = START;
+ 80002b6:	4b12      	ldr	r3, [pc, #72]	; (8000300 <command_parser_fsm+0x1b4>)
+ 80002b8:	781b      	ldrb	r3, [r3, #0]
+ 80002ba:	2b21      	cmp	r3, #33	; 0x21
+ 80002bc:	d103      	bne.n	80002c6 <command_parser_fsm+0x17a>
+ 80002be:	4b0f      	ldr	r3, [pc, #60]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80002c0:	2202      	movs	r2, #2
+ 80002c2:	701a      	strb	r2, [r3, #0]
+		else command_state = INIT;
+		break;
+ 80002c4:	e017      	b.n	80002f6 <command_parser_fsm+0x1aa>
+		else command_state = INIT;
+ 80002c6:	4b0d      	ldr	r3, [pc, #52]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80002c8:	2201      	movs	r2, #1
+ 80002ca:	701a      	strb	r2, [r3, #0]
+		break;
+ 80002cc:	e013      	b.n	80002f6 <command_parser_fsm+0x1aa>
+	case END2:
+		OK_flag = 1;
+ 80002ce:	4b0f      	ldr	r3, [pc, #60]	; (800030c <command_parser_fsm+0x1c0>)
+ 80002d0:	2201      	movs	r2, #1
+ 80002d2:	701a      	strb	r2, [r3, #0]
+		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+ 80002d4:	2120      	movs	r1, #32
+ 80002d6:	480b      	ldr	r0, [pc, #44]	; (8000304 <command_parser_fsm+0x1b8>)
+ 80002d8:	f001 fb26 	bl	8001928 <HAL_GPIO_TogglePin>
+
+		if(temp == (int)'!') command_state = START;
+ 80002dc:	4b08      	ldr	r3, [pc, #32]	; (8000300 <command_parser_fsm+0x1b4>)
  80002de:	781b      	ldrb	r3, [r3, #0]
- 80002e0:	2b4b      	cmp	r3, #75	; 0x4b
- 80002e2:	d103      	bne.n	80002ec <command_parser_fsm+0x12c>
- 80002e4:	4b22      	ldr	r3, [pc, #136]	; (8000370 <command_parser_fsm+0x1b0>)
- 80002e6:	2207      	movs	r2, #7
+ 80002e0:	2b21      	cmp	r3, #33	; 0x21
+ 80002e2:	d103      	bne.n	80002ec <command_parser_fsm+0x1a0>
+ 80002e4:	4b05      	ldr	r3, [pc, #20]	; (80002fc <command_parser_fsm+0x1b0>)
+ 80002e6:	2202      	movs	r2, #2
  80002e8:	701a      	strb	r2, [r3, #0]
-		break;
- 80002ea:	e03e      	b.n	800036a <command_parser_fsm+0x1aa>
 		else command_state = INIT;
- 80002ec:	4b20      	ldr	r3, [pc, #128]	; (8000370 <command_parser_fsm+0x1b0>)
+		break;
+ 80002ea:	e004      	b.n	80002f6 <command_parser_fsm+0x1aa>
+		else command_state = INIT;
+ 80002ec:	4b03      	ldr	r3, [pc, #12]	; (80002fc <command_parser_fsm+0x1b0>)
  80002ee:	2201      	movs	r2, #1
  80002f0:	701a      	strb	r2, [r3, #0]
 		break;
- 80002f2:	e03a      	b.n	800036a <command_parser_fsm+0x1aa>
-	case K:
-		if(temp == (int)'!') command_state = START;
- 80002f4:	4b1f      	ldr	r3, [pc, #124]	; (8000374 <command_parser_fsm+0x1b4>)
- 80002f6:	781b      	ldrb	r3, [r3, #0]
- 80002f8:	2b21      	cmp	r3, #33	; 0x21
- 80002fa:	d103      	bne.n	8000304 <command_parser_fsm+0x144>
- 80002fc:	4b1c      	ldr	r3, [pc, #112]	; (8000370 <command_parser_fsm+0x1b0>)
- 80002fe:	2202      	movs	r2, #2
- 8000300:	701a      	strb	r2, [r3, #0]
-		else if(temp == (int)'#') command_state = END2;
-		else command_state = INIT;
-		break;
- 8000302:	e032      	b.n	800036a <command_parser_fsm+0x1aa>
-		else if(temp == (int)'#') command_state = END2;
- 8000304:	4b1b      	ldr	r3, [pc, #108]	; (8000374 <command_parser_fsm+0x1b4>)
- 8000306:	781b      	ldrb	r3, [r3, #0]
- 8000308:	2b23      	cmp	r3, #35	; 0x23
- 800030a:	d103      	bne.n	8000314 <command_parser_fsm+0x154>
- 800030c:	4b18      	ldr	r3, [pc, #96]	; (8000370 <command_parser_fsm+0x1b0>)
- 800030e:	2209      	movs	r2, #9
- 8000310:	701a      	strb	r2, [r3, #0]
-		break;
- 8000312:	e02a      	b.n	800036a <command_parser_fsm+0x1aa>
-		else command_state = INIT;
- 8000314:	4b16      	ldr	r3, [pc, #88]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000316:	2201      	movs	r2, #1
- 8000318:	701a      	strb	r2, [r3, #0]
-		break;
- 800031a:	e026      	b.n	800036a <command_parser_fsm+0x1aa>
-	case END1:
-		RST_flag = 1;
- 800031c:	4b17      	ldr	r3, [pc, #92]	; (800037c <command_parser_fsm+0x1bc>)
- 800031e:	2201      	movs	r2, #1
- 8000320:	701a      	strb	r2, [r3, #0]
-		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
- 8000322:	2120      	movs	r1, #32
- 8000324:	4814      	ldr	r0, [pc, #80]	; (8000378 <command_parser_fsm+0x1b8>)
- 8000326:	f001 faff 	bl	8001928 <HAL_GPIO_TogglePin>
-
-		if(temp == (int)'!') command_state = START;
- 800032a:	4b12      	ldr	r3, [pc, #72]	; (8000374 <command_parser_fsm+0x1b4>)
- 800032c:	781b      	ldrb	r3, [r3, #0]
- 800032e:	2b21      	cmp	r3, #33	; 0x21
- 8000330:	d103      	bne.n	800033a <command_parser_fsm+0x17a>
- 8000332:	4b0f      	ldr	r3, [pc, #60]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000334:	2202      	movs	r2, #2
- 8000336:	701a      	strb	r2, [r3, #0]
-		else command_state = INIT;
-		break;
- 8000338:	e017      	b.n	800036a <command_parser_fsm+0x1aa>
-		else command_state = INIT;
- 800033a:	4b0d      	ldr	r3, [pc, #52]	; (8000370 <command_parser_fsm+0x1b0>)
- 800033c:	2201      	movs	r2, #1
- 800033e:	701a      	strb	r2, [r3, #0]
-		break;
- 8000340:	e013      	b.n	800036a <command_parser_fsm+0x1aa>
-	case END2:
-		OK_flag = 1;
- 8000342:	4b0f      	ldr	r3, [pc, #60]	; (8000380 <command_parser_fsm+0x1c0>)
- 8000344:	2201      	movs	r2, #1
- 8000346:	701a      	strb	r2, [r3, #0]
-		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
- 8000348:	2120      	movs	r1, #32
- 800034a:	480b      	ldr	r0, [pc, #44]	; (8000378 <command_parser_fsm+0x1b8>)
- 800034c:	f001 faec 	bl	8001928 <HAL_GPIO_TogglePin>
-
-		if(temp == (int)'!') command_state = START;
- 8000350:	4b08      	ldr	r3, [pc, #32]	; (8000374 <command_parser_fsm+0x1b4>)
- 8000352:	781b      	ldrb	r3, [r3, #0]
- 8000354:	2b21      	cmp	r3, #33	; 0x21
- 8000356:	d103      	bne.n	8000360 <command_parser_fsm+0x1a0>
- 8000358:	4b05      	ldr	r3, [pc, #20]	; (8000370 <command_parser_fsm+0x1b0>)
- 800035a:	2202      	movs	r2, #2
- 800035c:	701a      	strb	r2, [r3, #0]
-		else command_state = INIT;
-		break;
- 800035e:	e004      	b.n	800036a <command_parser_fsm+0x1aa>
-		else command_state = INIT;
- 8000360:	4b03      	ldr	r3, [pc, #12]	; (8000370 <command_parser_fsm+0x1b0>)
- 8000362:	2201      	movs	r2, #1
- 8000364:	701a      	strb	r2, [r3, #0]
-		break;
- 8000366:	e000      	b.n	800036a <command_parser_fsm+0x1aa>
+ 80002f2:	e000      	b.n	80002f6 <command_parser_fsm+0x1aa>
 	default:
 		break;
- 8000368:	bf00      	nop
+ 80002f4:	bf00      	nop
 	}
 }
+ 80002f6:	bf00      	nop
+ 80002f8:	bd80      	pop	{r7, pc}
+ 80002fa:	bf00      	nop
+ 80002fc:	20000000 	.word	0x20000000
+ 8000300:	20000080 	.word	0x20000080
+ 8000304:	40010800 	.word	0x40010800
+ 8000308:	200000d0 	.word	0x200000d0
+ 800030c:	200000d1 	.word	0x200000d1
+
+08000310 <HAL_UART_RxCpltCallback>:
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+ 8000310:	b580      	push	{r7, lr}
+ 8000312:	b082      	sub	sp, #8
+ 8000314:	af00      	add	r7, sp, #0
+ 8000316:	6078      	str	r0, [r7, #4]
+	if(huart->Instance == USART2) {
+ 8000318:	687b      	ldr	r3, [r7, #4]
+ 800031a:	681b      	ldr	r3, [r3, #0]
+ 800031c:	4a13      	ldr	r2, [pc, #76]	; (800036c <HAL_UART_RxCpltCallback+0x5c>)
+ 800031e:	4293      	cmp	r3, r2
+ 8000320:	d11f      	bne.n	8000362 <HAL_UART_RxCpltCallback+0x52>
+		HAL_UART_Transmit(&huart2 , &temp , 1 , 50) ;
+ 8000322:	2332      	movs	r3, #50	; 0x32
+ 8000324:	2201      	movs	r2, #1
+ 8000326:	4912      	ldr	r1, [pc, #72]	; (8000370 <HAL_UART_RxCpltCallback+0x60>)
+ 8000328:	4812      	ldr	r0, [pc, #72]	; (8000374 <HAL_UART_RxCpltCallback+0x64>)
+ 800032a:	f002 fc15 	bl	8002b58 <HAL_UART_Transmit>
+
+		buffer[index_buffer++] = temp;
+ 800032e:	4b12      	ldr	r3, [pc, #72]	; (8000378 <HAL_UART_RxCpltCallback+0x68>)
+ 8000330:	781b      	ldrb	r3, [r3, #0]
+ 8000332:	1c5a      	adds	r2, r3, #1
+ 8000334:	b2d1      	uxtb	r1, r2
+ 8000336:	4a10      	ldr	r2, [pc, #64]	; (8000378 <HAL_UART_RxCpltCallback+0x68>)
+ 8000338:	7011      	strb	r1, [r2, #0]
+ 800033a:	461a      	mov	r2, r3
+ 800033c:	4b0c      	ldr	r3, [pc, #48]	; (8000370 <HAL_UART_RxCpltCallback+0x60>)
+ 800033e:	7819      	ldrb	r1, [r3, #0]
+ 8000340:	4b0e      	ldr	r3, [pc, #56]	; (800037c <HAL_UART_RxCpltCallback+0x6c>)
+ 8000342:	5499      	strb	r1, [r3, r2]
+		if(index_buffer == MAX_BUFFER_SIZE) index_buffer = 0;
+ 8000344:	4b0c      	ldr	r3, [pc, #48]	; (8000378 <HAL_UART_RxCpltCallback+0x68>)
+ 8000346:	781b      	ldrb	r3, [r3, #0]
+ 8000348:	2b1e      	cmp	r3, #30
+ 800034a:	d102      	bne.n	8000352 <HAL_UART_RxCpltCallback+0x42>
+ 800034c:	4b0a      	ldr	r3, [pc, #40]	; (8000378 <HAL_UART_RxCpltCallback+0x68>)
+ 800034e:	2200      	movs	r2, #0
+ 8000350:	701a      	strb	r2, [r3, #0]
+		buffer_flag = 1;
+ 8000352:	4b0b      	ldr	r3, [pc, #44]	; (8000380 <HAL_UART_RxCpltCallback+0x70>)
+ 8000354:	2201      	movs	r2, #1
+ 8000356:	701a      	strb	r2, [r3, #0]
+		HAL_UART_Receive_IT(&huart2, &temp, 1);
+ 8000358:	2201      	movs	r2, #1
+ 800035a:	4905      	ldr	r1, [pc, #20]	; (8000370 <HAL_UART_RxCpltCallback+0x60>)
+ 800035c:	4805      	ldr	r0, [pc, #20]	; (8000374 <HAL_UART_RxCpltCallback+0x64>)
+ 800035e:	f002 fc7e 	bl	8002c5e <HAL_UART_Receive_IT>
+	}
+}
+ 8000362:	bf00      	nop
+ 8000364:	3708      	adds	r7, #8
+ 8000366:	46bd      	mov	sp, r7
+ 8000368:	bd80      	pop	{r7, pc}
  800036a:	bf00      	nop
- 800036c:	bd80      	pop	{r7, pc}
- 800036e:	bf00      	nop
- 8000370:	20000000 	.word	0x20000000
- 8000374:	20000140 	.word	0x20000140
- 8000378:	40010800 	.word	0x40010800
- 800037c:	20000190 	.word	0x20000190
- 8000380:	20000191 	.word	0x20000191
+ 800036c:	40004400 	.word	0x40004400
+ 8000370:	20000080 	.word	0x20000080
+ 8000374:	2000014c 	.word	0x2000014c
+ 8000378:	200000a2 	.word	0x200000a2
+ 800037c:	20000084 	.word	0x20000084
+ 8000380:	200000a3 	.word	0x200000a3
 
 08000384 <uart_communication_fsm>:
+
+
 
 void uart_communication_fsm() {
  8000384:	b580      	push	{r7, lr}
@@ -584,13 +590,13 @@ void uart_communication_fsm() {
  8000468:	bf00      	nop
  800046a:	bd80      	pop	{r7, pc}
  800046c:	20000001 	.word	0x20000001
- 8000470:	20000190 	.word	0x20000190
- 8000474:	20000080 	.word	0x20000080
- 8000478:	20000164 	.word	0x20000164
+ 8000470:	200000d0 	.word	0x200000d0
+ 8000474:	200000d4 	.word	0x200000d4
+ 8000478:	200000a4 	.word	0x200000a4
  800047c:	08004124 	.word	0x08004124
- 8000480:	20000168 	.word	0x20000168
- 8000484:	200000f8 	.word	0x200000f8
- 8000488:	20000191 	.word	0x20000191
+ 8000480:	200000a8 	.word	0x200000a8
+ 8000484:	2000014c 	.word	0x2000014c
+ 8000488:	200000d1 	.word	0x200000d1
  800048c:	20000198 	.word	0x20000198
 
 08000490 <main>:
@@ -656,7 +662,7 @@ int main(void)
  80004c6:	2b01      	cmp	r3, #1
  80004c8:	d104      	bne.n	80004d4 <main+0x44>
 		  command_parser_fsm();
- 80004ca:	f7ff fe79 	bl	80001c0 <command_parser_fsm>
+ 80004ca:	f7ff fe3f 	bl	800014c <command_parser_fsm>
 		  buffer_flag = 0;
  80004ce:	4b07      	ldr	r3, [pc, #28]	; (80004ec <main+0x5c>)
  80004d0:	2200      	movs	r2, #0
@@ -667,11 +673,11 @@ int main(void)
 	  if(buffer_flag == 1) {
  80004d8:	e7f3      	b.n	80004c2 <main+0x32>
  80004da:	bf00      	nop
- 80004dc:	200000b0 	.word	0x200000b0
- 80004e0:	20000140 	.word	0x20000140
- 80004e4:	200000f8 	.word	0x200000f8
- 80004e8:	20000080 	.word	0x20000080
- 80004ec:	20000163 	.word	0x20000163
+ 80004dc:	20000104 	.word	0x20000104
+ 80004e0:	20000080 	.word	0x20000080
+ 80004e4:	2000014c 	.word	0x2000014c
+ 80004e8:	200000d4 	.word	0x200000d4
+ 80004ec:	200000a3 	.word	0x200000a3
 
 080004f0 <SystemClock_Config>:
 /**
@@ -883,7 +889,7 @@ static void MX_ADC1_Init(void)
  80005fe:	3710      	adds	r7, #16
  8000600:	46bd      	mov	sp, r7
  8000602:	bd80      	pop	{r7, pc}
- 8000604:	20000080 	.word	0x20000080
+ 8000604:	200000d4 	.word	0x200000d4
  8000608:	40012400 	.word	0x40012400
 
 0800060c <MX_TIM2_Init>:
@@ -993,7 +999,7 @@ static void MX_TIM2_Init(void)
  800069a:	3718      	adds	r7, #24
  800069c:	46bd      	mov	sp, r7
  800069e:	bd80      	pop	{r7, pc}
- 80006a0:	200000b0 	.word	0x200000b0
+ 80006a0:	20000104 	.word	0x20000104
 
 080006a4 <MX_USART2_UART_Init>:
   * @brief USART2 Initialization Function
@@ -1059,7 +1065,7 @@ static void MX_USART2_UART_Init(void)
  80006ea:	bf00      	nop
  80006ec:	bd80      	pop	{r7, pc}
  80006ee:	bf00      	nop
- 80006f0:	200000f8 	.word	0x200000f8
+ 80006f0:	2000014c 	.word	0x2000014c
  80006f4:	40004400 	.word	0x40004400
 
 080006f8 <MX_GPIO_Init>:
@@ -1821,7 +1827,7 @@ void TIM2_IRQHandler(void)
  8000a8e:	bf00      	nop
  8000a90:	bd80      	pop	{r7, pc}
  8000a92:	bf00      	nop
- 8000a94:	200000b0 	.word	0x200000b0
+ 8000a94:	20000104 	.word	0x20000104
 
 08000a98 <USART2_IRQHandler>:
 
@@ -1845,7 +1851,7 @@ void USART2_IRQHandler(void)
  8000aa2:	bf00      	nop
  8000aa4:	bd80      	pop	{r7, pc}
  8000aa6:	bf00      	nop
- 8000aa8:	200000f8 	.word	0x200000f8
+ 8000aa8:	2000014c 	.word	0x2000014c
 
 08000aac <_sbrk>:
  *
@@ -9854,7 +9860,7 @@ static HAL_StatusTypeDef UART_Receive_IT(UART_HandleTypeDef *huart)
         /*Call legacy weak Rx complete callback*/
         HAL_UART_RxCpltCallback(huart);
  8003672:	6878      	ldr	r0, [r7, #4]
- 8003674:	f7fc fd6a 	bl	800014c <HAL_UART_RxCpltCallback>
+ 8003674:	f7fc fe4c 	bl	8000310 <HAL_UART_RxCpltCallback>
 #endif /* USE_HAL_UART_REGISTER_CALLBACKS */
       }
 
